@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ray | 個人網站與履歷</title>
+    <!-- 引入 FontAwesome 圖示庫 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #34495e;
+            --accent-color: #3498db;
+            --bg-color: #f4f7f6;
+            --text-color: #333;
+            --card-bg: #ffffff;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', Arial, 'LiHei Pro', '微軟正黑體', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        /* 頂部橫幅設計 */
+        header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 5rem 2rem;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 3rem;
+            margin-bottom: 0.5rem;
+            letter-spacing: 2px;
+        }
+
+        header p {
+            font-size: 1.2rem;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        /* 社群媒體連結按鈕 */
+        .social-links {
+            margin-top: 1.2rem;
+        }
+
+        .social-links a {
+            color: white;
+            font-size: 2rem;
+            transition: color 0.3s ease, transform 0.2s ease;
+            display: inline-block;
+            text-decoration: none;
+        }
+
+        .social-links a:hover {
+            color: #e1306c; /* Instagram 的經典代表色 */
+            transform: scale(1.1) translateY(-2px);
+        }
+
+        /* 內容容器 */
+        .container {
+            max-width: 800px;
+            margin: -30px auto 50px auto; /* 讓容器稍微往上疊加在 header 上 */
+            padding: 0 20px;
+            position: relative;
+        }
+
+        /* 每個區塊的卡片設計 */
+        section {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        h2 {
+            color: var(--primary-color);
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid var(--accent-color);
+            display: inline-block;
+            padding-bottom: 5px;
+        }
+
+        h3 {
+            color: var(--secondary-color);
+            margin: 1.5rem 0 0.5rem 0;
+            font-size: 1.2rem;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            color: #555;
+        }
+
+        /* 語言能力列表 */
+        .lang-list {
+            list-style: none;
+        }
+        .lang-list li::before {
+            content: "•";
+            color: var(--accent-color);
+            font-weight: bold;
+            display: inline-block; 
+            width: 1em;
+            margin-left: -1em;
+        }
+        .lang-list li {
+            padding-left: 1em;
+            margin-bottom: 0.5rem;
+        }
+
+        /* Profile 佈局與 MBTI 設計 */
+        .profile-content {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .profile-text {
+            flex: 1;
+        }
+
+        .profile-mbti {
+            text-align: center;
+            background: #fdfdfd;
+            padding: 1.5rem;
+            border-radius: 10px;
+            border: 2px dashed #e0e0e0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .profile-mbti:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.08);
+            border-color: var(--accent-color);
+        }
+
+        .profile-mbti img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 12px;
+            border: 3px solid var(--accent-color);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .mbti-label {
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            letter-spacing: 1px;
+        }
+        
+        .mbti-desc {
+            font-size: 0.95rem;
+            color: #666;
+            margin-top: 0.3rem;
+            font-weight: 500;
+        }
+
+        @media (min-width: 650px) {
+            .profile-content {
+                flex-direction: row;
+                align-items: center;
+            }
+            .profile-mbti {
+                min-width: 200px;
+            }
+        }
+
+        /* 履歷按鈕區塊 */
+        .resume-actions {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-top: 1rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: var(--accent-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        /* 經歷與學歷的時間軸設計 */
+        .timeline-item {
+            margin-bottom: 1.5rem;
+            padding-left: 1.5rem;
+            border-left: 3px solid #e0e0e0;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            width: 15px;
+            height: 15px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            position: absolute;
+            left: -9px;
+            top: 5px;
+        }
+
+        .timeline-date {
+            font-size: 0.9rem;
+            color: #888;
+            font-weight: bold;
+            margin-bottom: 0.2rem;
+        }
+
+        .timeline-title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        .timeline-subtitle {
+            color: #666;
+        }
+
+        /* 社團經驗列表 */
+        .club-list {
+            list-style: none;
+        }
+
+        .club-list li {
+            background: #f9f9f9;
+            margin-bottom: 0.8rem;
+            padding: 15px;
+            border-radius: 5px;
+            border-left: 4px solid var(--primary-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .club-list li i {
+            margin-right: 15px;
+            color: var(--accent-color);
+            font-size: 1.2rem;
+        }
+
+        /* 遊戲區塊設計 */
+        .game-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .game-card {
+            background: #fdfdfd;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: bold;
+            color: var(--primary-color);
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+        .game-card:hover {
+            transform: translateY(-3px);
+            border-color: var(--accent-color);
+        }
+        .game-card i {
+            font-size: 1.5rem;
+        }
+        .game-valorant i { color: #ff4655; } /* Valorant 紅色 */
+        .game-minecraft i { color: #4a6f28; } /* Minecraft 綠色 */
+
+        /* 作息表設計 */
+        .schedule-list {
+            list-style: none;
+            border-left: 3px solid var(--accent-color);
+            padding-left: 0;
+            margin-left: 10px;
+        }
+        .schedule-item {
+            position: relative;
+            padding: 10px 15px;
+            margin-bottom: 10px;
+            background: #f9f9f9;
+            border-radius: 0 5px 5px 0;
+            margin-left: 15px;
+            display: flex;
+            align-items: center;
+        }
+        .schedule-item::before {
+            content: '';
+            position: absolute;
+            left: -24px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 3px solid var(--accent-color);
+            border-radius: 50%;
+        }
+        .schedule-time {
+            font-weight: bold;
+            color: var(--accent-color);
+            width: 130px;
+            flex-shrink: 0;
+        }
+        .schedule-task {
+            color: var(--text-color);
+            font-weight: 500;
+        }
+
+        .placeholder-text {
+            color: #999;
+            font-style: italic;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            color: #7f8c8d;
+            font-size: 0.9rem;
+        }
+
+        /* 手機版排版微調 */
+        @media (max-width: 600px) {
+            .resume-actions {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .schedule-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            .schedule-time {
+                margin-bottom: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ray</h1>
+        <p>Information Engineering Student | Developer</p>
+        
+        <!-- 社群媒體按鈕區塊 -->
+        <div class="social-links">
+            <!-- 請將 href 中的網址換成你自己的 Instagram 連結，例如 https://www.instagram.com/你的帳號/ -->
+            <a href="https://www.instagram.com/confucianism18" target="_blank" rel="noopener noreferrer" title="追蹤我的 Instagram">
+                <i class="fa-brands fa-instagram"></i>
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <!-- Profile 區塊 -->
+        <section id="profile">
+            <h2><i class="fa-solid fa-user"></i> Profile 關於我</h2>
+            <div class="profile-content">
+                <div class="profile-text">
+                    <p>你好！我是Ray，目前就讀於淡江大學資訊工程學系。我對資訊科技與程式開發充滿熱忱，具備良好的邏輯思考能力與解決問題的態度。過去在社團中擔任多項核心幹部，培養了扎實的團隊協作、活動企劃與溝通協調能力。期待未來能持續在軟體工程領域精進，並將所學應用於實務挑戰中。</p>
+                    
+                    <h3>語言能力</h3>
+                    <ul class="lang-list">
+                        <li><strong>中文：</strong>母語 (Native)</li>
+                        <li><strong>英文：</strong>日常溝通程度 (TOEIC: 無)</li>
+                        <li><strong>台語：</strong>日常溝通程度</li>
+                    </ul>
+                </div>
+                
+                <a href="mbti.html" class="profile-mbti" title="點擊查看我的 MBTI 介紹" style="text-decoration: none; color: inherit; cursor: pointer;">
+                    <!-- 若有自己的 MBTI 圖片，請將下方 src 屬性改為你的圖片檔名，例如 src="infj.png" -->
+                    <img src="INFJ-T.jpg" alt="MBTI INFJ-T" onerror="this.src='https://placehold.co/240x240/cccccc/666666?text=Image+Not+Found'">
+                    <div class="mbti-label">INFJ-T</div>
+                    <div class="mbti-desc">提倡者 (Advocate)</div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Resume 區塊 -->
+        <section id="resume">
+            <h2><i class="fa-solid fa-file-lines"></i> Resume 履歷</h2>
+            <p>點擊下方按鈕可下載我的完整版履歷：</p>
+            <div class="resume-actions">
+                <!-- 請將 href 的屬性改成你實際的 PDF 檔名 -->
+                <a href="./resume_zh.pdf" class="btn" download>
+                    <i class="fa-solid fa-download"></i> 下載中文履歷
+                </a>
+                <a href="./resume_en.pdf" class="btn btn-outline" download>
+                    <i class="fa-solid fa-download"></i> Download English Resume
+                </a>
+            </div>
+            <p style="font-size: 0.85rem; color: #999; margin-top: 10px;">*若無法下載，請確認網頁目錄中是否已包含對應的檔案。</p>
+        </section>
+
+        <!-- Experience 區塊 -->
+        <section id="experience">
+            <h2><i class="fa-solid fa-briefcase"></i> Experience 經歷</h2>
+            <div class="placeholder-text">
+                <i class="fa-solid fa-hourglass-half" style="font-size: 2rem; margin-bottom: 10px; display: block; color: #ddd;"></i>
+                待新增
+            </div>
+        </section>
+
+        <!-- Education 區塊 -->
+        <section id="education">
+            <h2><i class="fa-solid fa-graduation-cap"></i> Education 學歷</h2>
+            
+            <div class="timeline-item">
+                <div class="timeline-date">2025.09 ~ 在學中</div>
+                <div class="timeline-title">淡江大學</div>
+                <div class="timeline-subtitle">資訊工程學系</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2022.08 ~ 2025.06</div>
+                <div class="timeline-title">新北市立三重高級中學</div>
+                <div class="timeline-subtitle">高中部</div>
+            </div>
+        </section>
+
+        <!-- Competitions 區塊 -->
+        <section id="competitions">
+            <h2><i class="fa-solid fa-trophy"></i> Competitions 比賽經歷</h2>
+            
+            <div class="timeline-item">
+                <div class="timeline-date">112學年度第一學期</div>
+                <div class="timeline-title">校內國語文競賽 閩南語朗讀組</div>
+                <div class="timeline-subtitle">第三名</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2023</div>
+                <div class="timeline-title">金象盃全國大數據實務能力競賽 全國決賽</div>
+                <div class="timeline-subtitle">高中職組 佳作</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">2022</div>
+                <div class="timeline-title">金象盃全國大數據實務能力競賽 北區初賽</div>
+                <div class="timeline-subtitle">高中職組 佳作</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">111學年度第二學期</div>
+                <div class="timeline-title">高中部數學科學藝競賽</div>
+                <div class="timeline-subtitle">第六名</div>
+            </div>
+
+            <div class="timeline-item">
+                <div class="timeline-date">111學年度第一學期</div>
+                <div class="timeline-title">校內國語文競賽 閩南語朗讀組</div>
+                <div class="timeline-subtitle">佳作</div>
+            </div>
+        </section>
+
+        <!-- Club 區塊 -->
+        <section id="club">
+            <h2><i class="fa-solid fa-users"></i> Club 社團經驗</h2>
+            <ul class="club-list">
+                <li>
+                    <i class="fa-solid fa-star"></i>
+                    <div>
+                        <strong>副社長</strong> - 新北市立三重高級中學模擬聯合國社
+                    </div>
+                </li>
+                <li>
+                    <i class="fa-solid fa-network-wired"></i>
+                    <div>
+                        <strong>網管</strong> - 新北市立三重高級中學模擬聯合國社
+                    </div>
+                </li>
+                <li>
+                    <i class="fa-solid fa-pen-nib"></i>
+                    <div>
+                        <strong>文書</strong> - 新北市立三重高級中學模擬聯合國社
+                    </div>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Schedule 區塊 -->
+        <section id="schedule">
+            <h2><i class="fa-solid fa-clock"></i> Daily Schedule 作息時間表</h2>
+            <div class="placeholder-text">
+                <i class="fa-solid fa-hourglass-half" style="font-size: 2rem; margin-bottom: 10px; display: block; color: #ddd;"></i>
+                待更新
+            </div>
+        </section>
+
+        <!-- Games 區塊 -->
+        <section id="games">
+            <h2><i class="fa-solid fa-gamepad"></i> Games 遊戲愛好</h2>
+            <div class="game-container">
+                <div class="game-card game-valorant">
+                    <i class="fa-solid fa-crosshairs"></i>
+                    <span>Valorant</span>
+                </div>
+                <div class="game-card game-minecraft">
+                    <i class="fa-solid fa-cube"></i>
+                    <span>Minecraft</span>
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <footer>
+        <p>&copy; 2026 Ray. All Rights Reserved.</p>
+    </footer>
+
+</body>
+</html>
