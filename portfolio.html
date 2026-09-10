@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ray | 作品集與專案展覽</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Helvetica Neue', 'Arial', '微軟正黑體', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            background-color: #fafafa;
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 隱藏捲動條但保留功能 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* 卡片共用樣式與動畫 */
+        .bento-card {
+            background: white;
+            border-radius: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bento-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0,0,0,0.02);
+        }
+
+        /* 漸層文字 */
+        .text-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex flex-col">
+
+    <main class="max-w-6xl mx-auto flex-1 w-full">
+        
+        <!-- 頂部 Header 與導航 -->
+        <header class="mb-10 px-2 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+                <a href="index.html" class="inline-flex items-center gap-2 text-xs font-semibold text-brand-600 hover:text-brand-700 mb-3 group transition-colors">
+                    <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                    返回個人主頁
+                </a>
+                <p class="text-sm font-semibold text-brand-500 tracking-wider uppercase mb-1">Projects & Works</p>
+                <h1 class="text-3xl sm:text-4xl font-bold text-gradient tracking-tight">作品集與專案展覽</h1>
+                <p class="text-sm text-gray-500 mt-1">匯集 Web 前端開發、C++ 高效能系統實作與校園實務專案</p>
+            </div>
+
+            <!-- GitHub 捷徑按鈕 -->
+            <div class="flex items-center gap-3">
+                <a href="https://github.com/yanruray" target="_blank" class="px-4 py-2.5 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-semibold flex items-center gap-2 shadow-sm transition-all hover:scale-105">
+                    <i class="fa-brands fa-github text-base"></i>
+                    GitHub Profile
+                </a>
+            </div>
+        </header>
+
+        <!-- Bento Grid 佈局 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-max">
+
+            <!-- 專案 1：個人 Bento 形象與履歷網站 (佔 2 欄) -->
+            <div class="bento-card col-span-1 md:col-span-2 lg:col-span-2 p-8 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-laptop-code text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 text-xs font-bold rounded-full bg-emerald-50 text-emerald-600 border border-emerald-100 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            運行中 (Live)
+                        </span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">個人 Bento 形象與履歷網站</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-6">
+                        運用現代 Bento Grid 網格美學設計的個人入口網站。整合個人經歷、學歷時間軸、比賽得獎紀錄，並具備獨立的 MBTI 提倡者人格深度分析頁面，打造極簡、流暢的 SaaS 風格視覺體驗。
+                    </p>
+
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-start gap-2.5 text-xs text-gray-600">
+                            <i class="fa-solid fa-check text-brand-500 mt-0.5"></i>
+                            <span>完全響應式佈局 (Mobile, Tablet, Desktop 自適應)</span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-gray-600">
+                            <i class="fa-solid fa-check text-brand-500 mt-0.5"></i>
+                            <span>微交互動態動畫與 Hover 立體層次陰影效果</span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-gray-600">
+                            <i class="fa-solid fa-check text-brand-500 mt-0.5"></i>
+                            <span>模組化卡片架構，易於擴充專案與社團活動紀錄</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-100 mb-6">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">HTML5</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-brand-50 text-brand-700 border border-brand-100">Tailwind CSS</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">JavaScript</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">GitHub Pages</span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <a href="index.html" class="flex-1 py-2.5 px-4 rounded-xl bg-brand-500 hover:bg-brand-600 text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-sm">
+                            <i class="fa-solid fa-eye"></i> 首頁體驗
+                        </a>
+                        <a href="https://github.com/yanruray/profile" target="_blank" class="py-2.5 px-4 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-700 text-xs font-semibold flex items-center justify-center gap-2 transition-all">
+                            <i class="fa-brands fa-github"></i> 原始碼
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 專案 2：C++ 高效能演算法與資料分析 (佔 2 欄) -->
+            <div class="bento-card col-span-1 md:col-span-2 lg:col-span-2 p-8 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-microchip text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 text-xs font-bold rounded-full bg-amber-50 text-amber-600 border border-amber-100 flex items-center gap-1.5">
+                            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                            積極實作中
+                        </span>
+                    </div>
+
+                    <h3 class="text-2xl font-bold text-gray-900 mb-2">C++ 演算法與巨量資料處理工具</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-6">
+                        基於「金象盃全國大數據實務能力競賽」實戰經驗，針對巨量資料分析與處理管線進行高效能演算法實作。運用現代 C++ 特性探索記憶體連續佈局、STL 容器效能評測與快速雜湊檢索機制。
+                    </p>
+
+                    <div class="space-y-3 mb-6">
+                        <div class="flex items-start gap-2.5 text-xs text-gray-600">
+                            <i class="fa-solid fa-check text-blue-500 mt-0.5"></i>
+                            <span>STL 容器 (vector, unordered_map) 記憶體與快取友善最佳化</span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-gray-600">
+                            <i class="fa-solid fa-check text-blue-500 mt-0.5"></i>
+                            <span>大型資料集快速載入、欄位清洗與自訂排序管線</span>
+                        </div>
+                        <div class="flex items-start gap-2.5 text-xs text-gray-600">
+                            <i class="fa-solid fa-check text-blue-500 mt-0.5"></i>
+                            <span>演算法時間複雜度與空間複雜度基準評測 (Benchmarking)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-100 mb-6">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100">C++17</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">STL</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">CMake</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">Data Analytics</span>
+                    </div>
+
+                    <div class="flex gap-3">
+                        <a href="https://github.com/yanruray" target="_blank" class="w-full py-2.5 px-4 rounded-xl bg-gray-900 hover:bg-black text-white text-xs font-semibold flex items-center justify-center gap-2 transition-all shadow-sm">
+                            <i class="fa-brands fa-github"></i> 查看 GitHub 專案庫
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 專案 3：校園社團事務協作平台 (佔 2 欄) -->
+            <div class="bento-card col-span-1 md:col-span-2 lg:col-span-2 p-8 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-users-gear text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 text-xs font-bold rounded-full bg-purple-50 text-purple-700 border border-purple-100">
+                            概念原型
+                        </span>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">校園社團活動與資訊管理系統</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                        結合在新創社與模擬聯合國社的幹部管理經驗，規劃針對學生社團的輕量化協作平台。包含活動簽到名冊、會議議程排程與幹部權限分工。
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-100 mb-6">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-purple-50 text-purple-700 border border-purple-100">Web App</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">Tailwind CSS</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">UI/UX</span>
+                    </div>
+                </div>
+
+                <a href="https://github.com/yanruray" target="_blank" class="py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-semibold flex items-center justify-center gap-2 transition-all border border-gray-100">
+                    <i class="fa-solid fa-code-fork"></i> 架構規劃中
+                </a>
+            </div>
+
+            <!-- 專案 4：Minecraft 伺服器自訂外掛 (佔 2 欄) -->
+            <div class="bento-card col-span-1 md:col-span-2 lg:col-span-2 p-8 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-start justify-between mb-4">
+                        <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-cubes text-xl"></i>
+                        </div>
+                        <span class="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-600">
+                            興趣探索
+                        </span>
+                    </div>
+
+                    <h3 class="text-xl font-bold text-gray-900 mb-2">Minecraft 伺服器自訂機制外掛</h3>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-4">
+                        因對 Minecraft 沙盒機制的熱愛，實作基於 Spigot / Paper 框架的事件監聽外掛，自訂社群經濟與自動化互動指令。
+                    </p>
+
+                    <div class="flex flex-wrap gap-2 pt-4 border-t border-gray-100 mb-6">
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-emerald-50 text-emerald-700 border border-emerald-100">Java</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">Spigot API</span>
+                        <span class="px-2.5 py-1 rounded-lg text-xs font-medium bg-gray-50 text-gray-700 border border-gray-100">Event-Driven</span>
+                    </div>
+                </div>
+
+                <a href="https://github.com/yanruray" target="_blank" class="py-2.5 px-4 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-700 text-xs font-semibold flex items-center justify-center gap-2 transition-all border border-gray-100">
+                    <i class="fa-brands fa-github"></i> 開源專案展示
+                </a>
+            </div>
+
+            <!-- 底部返回首頁卡片 (佔滿 4 欄) -->
+            <div class="bento-card col-span-1 md:col-span-2 lg:col-span-4 p-6 group cursor-pointer relative overflow-hidden bg-gray-900 text-white flex items-center justify-center">
+                <a href="index.html" class="absolute inset-0 z-10"></a>
+                <div class="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
+                
+                <div class="relative z-10 flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:-translate-x-2 transition-transform duration-300">
+                        <i class="fa-solid fa-arrow-left"></i>
+                    </div>
+                    <span class="font-bold text-lg tracking-wide">返回個人主頁</span>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="mt-12 mb-6 text-center text-sm text-gray-400">
+            <p>&copy; 2026 Ray. Projects & Portfolio Showcase.</p>
+        </footer>
+
+    </main>
+
+</body>
+</html>

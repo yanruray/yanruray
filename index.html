@@ -279,30 +279,50 @@
                 </div>
             </div>
 
-            <!-- 佔用 1 欄 -->
-            <div class="bento-card col-span-1 p-8">
-                <div class="flex items-center gap-3 mb-6">
-                    <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                        <i class="fa-solid fa-users text-lg"></i>
+            <!-- 佔用 1 欄 (社團與經歷) -->
+            <div class="bento-card col-span-1 p-8 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-10 h-10 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+                            <i class="fa-solid fa-users text-lg"></i>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-800">社團與經歷</h3>
                     </div>
-                    <h3 class="text-xl font-bold text-gray-800">社團與經歷</h3>
-                </div>
 
-                    <div class="mb-4">
-                        <h4 class="font-bold text-gray-900 text-sm mb-2">模擬聯合國社</h4>
-                        <p class="text-xs text-gray-500 mb-3">新北市立三重高級中學</p>
-                        <div class="flex flex-wrap gap-2">
-                            <span class="px-3 py-1.5 bg-purple-50 text-purple-700 text-xs font-medium rounded-lg border border-purple-100">副社長</span>
-                            <span class="px-3 py-1.5 bg-purple-50 text-purple-700 text-xs font-medium rounded-lg border border-purple-100">網管</span>
-                            <span class="px-3 py-1.5 bg-purple-50 text-purple-700 text-xs font-medium rounded-lg border border-purple-100">文書</span>
+                    <div class="space-y-5">
+                        <!-- 新創社 (淡江大學) -->
+                        <div class="pb-5 border-b border-gray-100">
+                            <div class="flex items-start justify-between flex-wrap gap-1 mb-1">
+                                <h4 class="font-bold text-gray-900 text-sm">新創社</h4>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-purple-50 text-purple-700 border border-purple-100">2026.08.05 ~ 至今</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2">淡江大學</p>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span class="px-2.5 py-1 bg-purple-50/80 text-purple-700 text-xs font-medium rounded-lg border border-purple-100/80">成員</span>
+                            </div>
+                        </div>
+
+                        <!-- 模擬聯合國社 -->
+                        <div>
+                            <div class="flex items-start justify-between flex-wrap gap-1 mb-1">
+                                <h4 class="font-bold text-gray-900 text-sm">模擬聯合國社</h4>
+                                <span class="px-2 py-0.5 rounded text-[10px] font-medium bg-gray-100 text-gray-600">2023.09 ~ 2024.06</span>
+                            </div>
+                            <p class="text-xs text-gray-500 mb-2">新北市立三重高級中學</p>
+                            <div class="flex flex-wrap gap-1.5">
+                                <span class="px-2 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded-lg border border-purple-100">副社長</span>
+                                <span class="px-2 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded-lg border border-purple-100">網管</span>
+                                <span class="px-2 py-1 bg-purple-50 text-purple-700 text-xs font-medium rounded-lg border border-purple-100">文書</span>
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="mt-6 pt-4 border-t border-gray-100">
-                         <p class="text-sm font-medium text-gray-400 flex items-center gap-2">
-                            <i class="fa-solid fa-briefcase"></i> 其他經歷待新增...
-                         </p>
-                    </div>
+                </div>
+
+                <div class="mt-6 pt-4 border-t border-gray-100">
+                    <p class="text-xs font-medium text-gray-400 flex items-center gap-2">
+                        <i class="fa-solid fa-sparkles text-purple-400"></i> 持續拓展實務經歷...
+                    </p>
+                </div>
             </div>
 
             <!-- 佔用 2 欄 (遊戲區塊加寬以補齊網格) -->
@@ -342,10 +362,10 @@
                             </div>
                             <h3 class="text-xl font-bold text-gray-800">作品集</h3>
                         </div>
-                        <span class="px-2.5 py-1 text-xs font-semibold rounded-full bg-brand-50 text-brand-600 border border-brand-100 flex items-center gap-1.5">
-                            <span class="w-1.5 h-1.5 rounded-full bg-brand-500 animate-pulse"></span>
-                            精選專案
-                        </span>
+                        <a href="portfolio.html" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-brand-500 text-white font-semibold text-xs hover:bg-brand-600 transition-all shadow-sm hover:shadow hover:scale-105">
+                            <span>專案詳情</span>
+                            <i class="fa-solid fa-arrow-right text-[10px]"></i>
+                        </a>
                     </div>
 
                     <div class="space-y-4">
@@ -357,10 +377,10 @@
                                     <h4 class="font-bold text-gray-900 text-sm group-hover:text-brand-600 transition-colors">個人 Bento 形象與履歷網站</h4>
                                 </div>
                                 <div class="flex items-center gap-2">
-                                    <a href="#" class="text-xs text-gray-400 hover:text-brand-600 transition-colors" title="預覽">
+                                    <a href="portfolio.html" class="text-xs text-gray-400 hover:text-brand-600 transition-colors" title="查看詳情">
                                         <i class="fa-solid fa-arrow-up-right-from-square"></i>
                                     </a>
-                                    <a href="https://github.com" target="_blank" class="text-xs text-gray-400 hover:text-gray-900 transition-colors" title="GitHub">
+                                    <a href="https://github.com/yanruray" target="_blank" class="text-xs text-gray-400 hover:text-gray-900 transition-colors" title="GitHub">
                                         <i class="fa-brands fa-github"></i>
                                     </a>
                                 </div>
@@ -384,7 +404,7 @@
                                 </div>
                                 <div class="flex items-center gap-2">
                                     <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-50 text-amber-600 border border-amber-100">開發中</span>
-                                    <a href="https://github.com" target="_blank" class="text-xs text-gray-400 hover:text-gray-900 transition-colors" title="GitHub">
+                                    <a href="https://github.com/yanruray" target="_blank" class="text-xs text-gray-400 hover:text-gray-900 transition-colors" title="GitHub">
                                         <i class="fa-brands fa-github"></i>
                                     </a>
                                 </div>
@@ -401,12 +421,13 @@
                     </div>
                 </div>
 
-                <div class="mt-4 pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-gray-400">
-                    <span class="flex items-center gap-1.5">
-                        <i class="fa-solid fa-code-branch"></i> 持續累積與開源中
-                    </span>
-                    <a href="https://github.com" target="_blank" class="text-brand-600 hover:text-brand-700 font-medium hover:underline flex items-center gap-1">
-                        更多作品 <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                <div class="mt-4 pt-3 border-t border-gray-100 flex flex-col gap-3">
+                    <a href="portfolio.html" class="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-gray-900 to-gray-800 hover:from-brand-600 hover:to-teal-600 text-white text-xs font-semibold flex items-center justify-between transition-all duration-300 shadow-sm group">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-layer-group text-brand-300 group-hover:text-white transition-colors"></i>
+                            進入作品集頁面查看更多專案
+                        </span>
+                        <i class="fa-solid fa-arrow-right group-hover:translate-x-1 transition-transform"></i>
                     </a>
                 </div>
             </div>
