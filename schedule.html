@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ray | 學期課表與修課分析</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'Helvetica Neue', 'Arial', '微軟正黑體', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0fdfa',
+                            100: '#ccfbf1',
+                            500: '#14b8a6',
+                            600: '#0d9488',
+                            900: '#134e4a',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        
+        body {
+            background-color: #fafafa;
+            color: #1a1a1a;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* 隱藏捲動條但保留功能 */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
+
+        /* 卡片共用樣式與動畫 */
+        .bento-card {
+            background: white;
+            border-radius: 24px;
+            border: 1px solid rgba(0, 0, 0, 0.04);
+            box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.03);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .bento-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 30px -5px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(0,0,0,0.02);
+        }
+
+        /* 漸層文字 */
+        .text-gradient {
+            background: linear-gradient(135deg, #0f172a 0%, #334155 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen py-10 px-4 sm:px-6 lg:px-8 flex flex-col">
+
+    <main class="max-w-6xl mx-auto flex-1 w-full">
+        
+        <!-- 頂部 Header 與導航 -->
+        <header class="mb-10 px-2 flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+            <div>
+                <a href="index.html" class="inline-flex items-center gap-2 text-xs font-semibold text-brand-600 hover:text-brand-700 mb-3 group transition-colors">
+                    <i class="fa-solid fa-arrow-left group-hover:-translate-x-1 transition-transform"></i>
+                    返回個人主頁
+                </a>
+                <p class="text-sm font-semibold text-brand-500 tracking-wider uppercase mb-1">Academic Timetable</p>
+                <h1 class="text-3xl sm:text-4xl font-bold text-gradient tracking-tight">學期課表與修課分析</h1>
+                <p class="text-sm text-gray-500 mt-1">淡江大學 資訊工程學系 ｜ 每週節次時段、教室地點與修課目錄</p>
+            </div>
+
+            <!-- 右側即時星期標籤 -->
+            <div class="flex items-center gap-3">
+                <div id="today-badge" class="px-4 py-2.5 rounded-xl bg-white border border-gray-100 text-xs font-semibold flex items-center gap-2 shadow-sm text-gray-700">
+                    <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span id="today-full-text">計算今日課表中...</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Bento Grid 統計區塊 -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 auto-rows-max mb-6">
+            
+            <!-- 統計 1: 總課堂數 -->
+            <div class="bento-card p-6 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-teal-50 text-teal-600 flex items-center justify-center text-xl flex-shrink-0">
+                    <i class="fa-solid fa-book-bookmark"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-gray-900">11 <span class="text-xs text-gray-500 font-normal">門課程</span></div>
+                    <div class="text-xs text-gray-500">每週共計 24 節課</div>
+                </div>
+            </div>
+
+            <!-- 統計 2: 專業必修 -->
+            <div class="bento-card p-6 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl flex-shrink-0">
+                    <i class="fa-solid fa-code"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-gray-900">5 <span class="text-xs text-gray-500 font-normal">門資工核心</span></div>
+                    <div class="text-xs text-gray-500">含 3 門實習演習課</div>
+                </div>
+            </div>
+
+            <!-- 統計 3: 跨域與創業 -->
+            <div class="bento-card p-6 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl flex-shrink-0">
+                    <i class="fa-solid fa-lightbulb"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-gray-900">4 <span class="text-xs text-gray-500 font-normal">門跨域通識</span></div>
+                    <div class="text-xs text-gray-500">ESG+AI、微機電、心理學</div>
+                </div>
+            </div>
+
+            <!-- 統計 4: 教室大樓 -->
+            <div class="bento-card p-6 flex items-center gap-4">
+                <div class="w-12 h-12 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl flex-shrink-0">
+                    <i class="fa-solid fa-location-dot"></i>
+                </div>
+                <div>
+                    <div class="text-2xl font-bold text-gray-900">4 <span class="text-xs text-gray-500 font-normal">棟教學大樓</span></div>
+                    <div class="text-xs text-gray-500 font-mono">G ｜ E ｜ B ｜ SG</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 完整週課表區塊 (佔滿全寬) -->
+        <div class="bento-card p-6 sm:p-8 mb-8">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+                <div>
+                    <h3 class="text-xl font-bold text-gray-800 flex items-center gap-2">
+                        <span>全週節次課表</span>
+                        <span class="text-xs font-semibold px-2.5 py-0.5 rounded-full bg-brand-50 text-brand-600 border border-brand-100">Timetable</span>
+                    </h3>
+                    <p class="text-xs text-gray-500 mt-0.5">滑鼠懸停課堂可查看詳細節次與教室</p>
+                </div>
+
+                <!-- 課程分類圖例 -->
+                <div class="flex flex-wrap items-center gap-2 text-xs">
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-teal-50 text-teal-700 border border-teal-100 font-medium text-[11px]">
+                        <span class="w-2 h-2 rounded-full bg-teal-500"></span> 資工核心
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 text-blue-700 border border-blue-100 font-medium text-[11px]">
+                        <span class="w-2 h-2 rounded-full bg-blue-500"></span> 數學與實驗
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-purple-50 text-purple-700 border border-purple-100 font-medium text-[11px]">
+                        <span class="w-2 h-2 rounded-full bg-purple-500"></span> 跨域與應用
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-700 border border-amber-100 font-medium text-[11px]">
+                        <span class="w-2 h-2 rounded-full bg-amber-500"></span> 通識與創業
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-700 border border-rose-100 font-medium text-[11px]">
+                        <span class="w-2 h-2 rounded-full bg-rose-500"></span> 語文與體育
+                    </span>
+                </div>
+            </div>
+
+            <!-- 課表表格 -->
+            <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm bg-gray-50/50">
+                <table class="w-full text-center border-collapse min-w-[700px] text-xs">
+                    <thead>
+                        <tr class="bg-gray-100/80 text-gray-700 font-semibold border-b border-gray-200/70">
+                            <th class="py-3.5 px-2 w-24 text-center font-bold text-gray-500">節次 / 時間</th>
+                            <th class="py-3.5 px-2 w-[18%] schedule-col-1 transition-colors">星期一 (Mon)</th>
+                            <th class="py-3.5 px-2 w-[18%] schedule-col-2 transition-colors">星期二 (Tue)</th>
+                            <th class="py-3.5 px-2 w-[18%] schedule-col-3 transition-colors">星期三 (Wed)</th>
+                            <th class="py-3.5 px-2 w-[18%] schedule-col-4 transition-colors">星期四 (Thu)</th>
+                            <th class="py-3.5 px-2 w-[18%] schedule-col-5 transition-colors">星期五 (Fri)</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-100 bg-white">
+                        <!-- 01 節 -->
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-3 px-2 font-bold text-gray-500 bg-gray-50/70">
+                                <div class="text-xs font-mono font-bold">01</div>
+                                <div class="text-[10px] text-gray-400 font-normal">08:10-09:00</div>
+                            </td>
+                            <td class="p-2 schedule-col-1">
+                                <div class="p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">資料結構</div>
+                                    <div class="flex items-center justify-between text-[10px] text-teal-600 mt-1">
+                                        <span>0662</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>G315</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-2">
+                                <div class="p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">資料結構</div>
+                                    <div class="flex items-center justify-between text-[10px] text-teal-600 mt-1">
+                                        <span>0662</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>G315</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-3">
+                                <div class="p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate"><span class="text-amber-500 font-bold mr-0.5">※</span>開源軟體實務</div>
+                                    <div class="flex items-center justify-between text-[10px] text-teal-600 mt-1">
+                                        <span>0665</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E201</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-4 font-mono">-</td>
+                            <td class="p-2 text-gray-300 schedule-col-5 font-mono">-</td>
+                        </tr>
+                        <!-- 02 節 -->
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-3 px-2 font-bold text-gray-500 bg-gray-50/70">
+                                <div class="text-xs font-mono font-bold">02</div>
+                                <div class="text-[10px] text-gray-400 font-normal">09:10-10:00</div>
+                            </td>
+                            <td class="p-2 schedule-col-1">
+                                <div class="p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">資料結構</div>
+                                    <div class="flex items-center justify-between text-[10px] text-teal-600 mt-1">
+                                        <span>0662</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>G315</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-2 font-mono">-</td>
+                            <td class="p-2 schedule-col-3">
+                                <div class="p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">開源軟體實務</div>
+                                    <div class="flex items-center justify-between text-[10px] text-teal-600 mt-1">
+                                        <span>0665</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E201</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-4 font-mono">-</td>
+                            <td class="p-2 text-gray-300 schedule-col-5 font-mono">-</td>
+                        </tr>
+                        <!-- 03 節 -->
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-3 px-2 font-bold text-gray-500 bg-gray-50/70">
+                                <div class="text-xs font-mono font-bold">03</div>
+                                <div class="text-[10px] text-gray-400 font-normal">10:10-11:00</div>
+                            </td>
+                            <td class="p-2 schedule-col-1">
+                                <div class="p-2.5 rounded-xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">離散數學</div>
+                                    <div class="flex items-center justify-between text-[10px] text-blue-600 mt-1">
+                                        <span>0674</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-blue-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E307</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-2">
+                                <div class="p-2.5 rounded-xl bg-cyan-50/90 border border-cyan-100 text-cyan-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">統計學習</div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-600 mt-1">
+                                        <span>0677</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-cyan-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E307</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-3">
+                                <div class="p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">開源軟體實務</div>
+                                    <div class="flex items-center justify-between text-[10px] text-teal-600 mt-1">
+                                        <span>0665</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E201</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-4">
+                                <div class="p-2.5 rounded-xl bg-amber-50/90 border border-amber-100 text-amber-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate" title="面對ESG+AI新時代：台灣中小企業商機與創業">面對ESG+AI...</div>
+                                    <div class="flex items-center justify-between text-[10px] text-amber-600 mt-1">
+                                        <span>1524</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-amber-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E787</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-5 font-mono">-</td>
+                        </tr>
+                        <!-- 04 節 -->
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-3 px-2 font-bold text-gray-500 bg-gray-50/70">
+                                <div class="text-xs font-mono font-bold">04</div>
+                                <div class="text-[10px] text-gray-400 font-normal">11:10-12:00</div>
+                            </td>
+                            <td class="p-2 schedule-col-1">
+                                <div class="p-2.5 rounded-xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">離散數學</div>
+                                    <div class="flex items-center justify-between text-[10px] text-blue-600 mt-1">
+                                        <span>0674</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-blue-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E307</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-2">
+                                <div class="p-2.5 rounded-xl bg-cyan-50/90 border border-cyan-100 text-cyan-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">統計學習</div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-600 mt-1">
+                                        <span>0677</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-cyan-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E307</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-3 font-mono">-</td>
+                            <td class="p-2 schedule-col-4">
+                                <div class="p-2.5 rounded-xl bg-amber-50/90 border border-amber-100 text-amber-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate" title="面對ESG+AI新時代：台灣中小企業商機與創業">面對ESG+AI...</div>
+                                    <div class="flex items-center justify-between text-[10px] text-amber-600 mt-1">
+                                        <span>1524</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-amber-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E787</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-5 font-mono">-</td>
+                        </tr>
+                        <!-- 05 節 (午休) -->
+                        <tr class="bg-gray-50/70">
+                            <td class="py-2.5 px-2 font-bold text-gray-400 bg-gray-100/60">
+                                <div class="text-xs font-mono">05</div>
+                                <div class="text-[10px] text-gray-400">午休</div>
+                            </td>
+                            <td colspan="5" class="py-2 text-xs text-gray-400 tracking-wider">── 中午休息與用餐時段 (12:10 ~ 13:00) ──</td>
+                        </tr>
+                        <!-- 06 節 -->
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-3 px-2 font-bold text-gray-500 bg-gray-50/70">
+                                <div class="text-xs font-mono font-bold">06</div>
+                                <div class="text-[10px] text-gray-400 font-normal">13:10-14:00</div>
+                            </td>
+                            <td class="p-2 schedule-col-1">
+                                <div class="p-2.5 rounded-xl bg-indigo-50/90 border border-indigo-100 text-indigo-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">資訊系統實驗(一)</div>
+                                    <div class="flex items-center justify-between text-[10px] text-indigo-600 mt-1">
+                                        <span>0668</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-indigo-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E213</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-2">
+                                <div class="p-2.5 rounded-xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate"><span class="text-amber-500 font-bold mr-0.5">※</span>離散數學 (實習)</div>
+                                    <div class="flex items-center justify-between text-[10px] text-blue-600 mt-1">
+                                        <span>實習</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-blue-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E309</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-3">
+                                <div class="p-2.5 rounded-xl bg-purple-50/90 border border-purple-100 text-purple-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">OFFICE證照實務</div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-600 mt-1">
+                                        <span>2525</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-purple-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>B113</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-4 font-mono">-</td>
+                            <td class="p-2 schedule-col-5">
+                                <div class="p-2.5 rounded-xl bg-rose-50/90 border border-rose-100 text-rose-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">英文（二）</div>
+                                    <div class="flex items-center justify-between text-[10px] text-rose-600 mt-1">
+                                        <span>1505</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-rose-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E512</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- 07 節 -->
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-3 px-2 font-bold text-gray-500 bg-gray-50/70">
+                                <div class="text-xs font-mono font-bold">07</div>
+                                <div class="text-[10px] text-gray-400 font-normal">14:10-15:00</div>
+                            </td>
+                            <td class="p-2 schedule-col-1">
+                                <div class="p-2.5 rounded-xl bg-indigo-50/90 border border-indigo-100 text-indigo-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">資訊系統實驗(一)</div>
+                                    <div class="flex items-center justify-between text-[10px] text-indigo-600 mt-1">
+                                        <span>0668</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-indigo-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E213</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-2">
+                                <div class="p-2.5 rounded-xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">離散數學</div>
+                                    <div class="flex items-center justify-between text-[10px] text-blue-600 mt-1">
+                                        <span>0674</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-blue-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E309</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-3">
+                                <div class="p-2.5 rounded-xl bg-purple-50/90 border border-purple-100 text-purple-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">OFFICE證照實務</div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-600 mt-1">
+                                        <span>2525</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-purple-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>B113</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-4 font-mono">-</td>
+                            <td class="p-2 schedule-col-5">
+                                <div class="p-2.5 rounded-xl bg-rose-50/90 border border-rose-100 text-rose-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">英文（二）</div>
+                                    <div class="flex items-center justify-between text-[10px] text-rose-600 mt-1">
+                                        <span>1505</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-rose-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E512</span>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                        <!-- 08 節 -->
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-3 px-2 font-bold text-gray-500 bg-gray-50/70">
+                                <div class="text-xs font-mono font-bold">08</div>
+                                <div class="text-[10px] text-gray-400 font-normal">15:10-16:00</div>
+                            </td>
+                            <td class="p-2 schedule-col-1">
+                                <div class="p-2.5 rounded-xl bg-indigo-50/90 border border-indigo-100 text-indigo-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">資訊系統實驗(一)</div>
+                                    <div class="flex items-center justify-between text-[10px] text-indigo-600 mt-1">
+                                        <span>0668</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-indigo-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E213</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-2 font-mono">-</td>
+                            <td class="p-2 text-gray-300 schedule-col-3 font-mono">-</td>
+                            <td class="p-2 text-gray-300 schedule-col-4 font-mono">-</td>
+                            <td class="p-2 text-gray-300 schedule-col-5 font-mono">-</td>
+                        </tr>
+                        <!-- 09 節 -->
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-3 px-2 font-bold text-gray-500 bg-gray-50/70">
+                                <div class="text-xs font-mono font-bold">09</div>
+                                <div class="text-[10px] text-gray-400 font-normal">16:10-17:00</div>
+                            </td>
+                            <td class="p-2 schedule-col-1">
+                                <div class="p-2.5 rounded-xl bg-purple-50/90 border border-purple-100 text-purple-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">正向心理學</div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-600 mt-1">
+                                        <span>2721</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-purple-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>SG503</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-2">
+                                <div class="p-2.5 rounded-xl bg-rose-50/90 border border-rose-100 text-rose-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">體育-重量訓練</div>
+                                    <div class="flex items-center justify-between text-[10px] text-rose-600 mt-1">
+                                        <span>3241</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-rose-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>SG323</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-3">
+                                <div class="p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate"><span class="text-amber-500 font-bold mr-0.5">※</span>資料結構 (實習)</div>
+                                    <div class="flex items-center justify-between text-[10px] text-teal-600 mt-1">
+                                        <span>實習</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E309</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-4">
+                                <div class="p-2.5 rounded-xl bg-orange-50/90 border border-orange-100 text-orange-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">微機電系統概論</div>
+                                    <div class="flex items-center justify-between text-[10px] text-orange-600 mt-1">
+                                        <span>1511</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-orange-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E787</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-5 font-mono">-</td>
+                        </tr>
+                        <!-- 10 節 -->
+                        <tr class="hover:bg-gray-50/50 transition-colors">
+                            <td class="py-3 px-2 font-bold text-gray-500 bg-gray-50/70">
+                                <div class="text-xs font-mono font-bold">10</div>
+                                <div class="text-[10px] text-gray-400 font-normal">17:10-18:00</div>
+                            </td>
+                            <td class="p-2 schedule-col-1">
+                                <div class="p-2.5 rounded-xl bg-purple-50/90 border border-purple-100 text-purple-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">正向心理學</div>
+                                    <div class="flex items-center justify-between text-[10px] text-purple-600 mt-1">
+                                        <span>2721</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-purple-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>SG503</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-2">
+                                <div class="p-2.5 rounded-xl bg-rose-50/90 border border-rose-100 text-rose-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">體育-重量訓練</div>
+                                    <div class="flex items-center justify-between text-[10px] text-rose-600 mt-1">
+                                        <span>3241</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-rose-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>SG323</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-3">
+                                <div class="p-2.5 rounded-xl bg-cyan-50/90 border border-cyan-100 text-cyan-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate"><span class="text-amber-500 font-bold mr-0.5">※</span>統計學習 (實習)</div>
+                                    <div class="flex items-center justify-between text-[10px] text-cyan-600 mt-1">
+                                        <span>實習</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-cyan-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E309</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 schedule-col-4">
+                                <div class="p-2.5 rounded-xl bg-orange-50/90 border border-orange-100 text-orange-950 text-left hover:shadow-sm transition-all hover:scale-[1.02]">
+                                    <div class="font-bold text-xs truncate">微機電系統概論</div>
+                                    <div class="flex items-center justify-between text-[10px] text-orange-600 mt-1">
+                                        <span>1511</span>
+                                        <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-orange-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E787</span>
+                                    </div>
+                                </div>
+                            </td>
+                            <td class="p-2 text-gray-300 schedule-col-5 font-mono">-</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 課程清單分類導覽 (Bento 卡片) -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            
+            <!-- 分類 1: 資工核心必修 -->
+            <div class="bento-card p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-teal-50 text-teal-600 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-terminal"></i>
+                        </div>
+                        <h4 class="font-bold text-base text-gray-900">資工核心與實驗</h4>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">資料結構 (0662)</span>
+                                <span class="text-[10px] font-mono bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded font-bold">3 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週一 01-02 (G315)、週二 01 (G315)、週三 09 (E309 實習)</div>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">離散數學 (0674)</span>
+                                <span class="text-[10px] font-mono bg-blue-50 text-blue-700 px-1.5 py-0.5 rounded font-bold">3 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週一 03-04 (E307)、週二 06 (E309 實習)、週二 07 (E309)</div>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">統計學習 (0677)</span>
+                                <span class="text-[10px] font-mono bg-cyan-50 text-cyan-700 px-1.5 py-0.5 rounded font-bold">2 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週二 03-04 (E307)、週三 10 (E309 實習)</div>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">開源軟體實務 (0665)</span>
+                                <span class="text-[10px] font-mono bg-teal-50 text-teal-700 px-1.5 py-0.5 rounded font-bold">2 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週三 01-03 (E201)</div>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">資訊系統實驗(一) (0668)</span>
+                                <span class="text-[10px] font-mono bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-bold">1 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週一 06-08 (E213 連續 3 節上機實作)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分類 2: 跨領域通識與應用 -->
+            <div class="bento-card p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-amber-50 text-amber-600 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-chart-line"></i>
+                        </div>
+                        <h4 class="font-bold text-base text-gray-900">跨領域與創業通識</h4>
+                    </div>
+
+                    <div class="space-y-3">
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">ESG+AI新時代商機與創業 (1524)</span>
+                                <span class="text-[10px] font-mono bg-amber-50 text-amber-700 px-1.5 py-0.5 rounded font-bold">2 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週四 03-04 (E787) 台灣中小企業商機探索</div>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">微機電系統概論 (1511)</span>
+                                <span class="text-[10px] font-mono bg-orange-50 text-orange-700 px-1.5 py-0.5 rounded font-bold">2 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週四 09-10 (E787)</div>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">OFFICE證照實務 (2525)</span>
+                                <span class="text-[10px] font-mono bg-purple-50 text-purple-700 px-1.5 py-0.5 rounded font-bold">2 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週三 06-07 (B113 商管大樓)</div>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">正向心理學 (2721)</span>
+                                <span class="text-[10px] font-mono bg-violet-50 text-violet-700 px-1.5 py-0.5 rounded font-bold">2 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週一 09-10 (SG503 體育館)</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 分類 3: 語文、體能與校園大樓導覽 -->
+            <div class="bento-card p-6 flex flex-col justify-between">
+                <div>
+                    <div class="flex items-center gap-2.5 mb-4">
+                        <div class="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center font-bold text-sm">
+                            <i class="fa-solid fa-dumbbell"></i>
+                        </div>
+                        <h4 class="font-bold text-base text-gray-900">語文、體育與校園大樓</h4>
+                    </div>
+
+                    <div class="space-y-3 mb-5">
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">英文（二） (1505)</span>
+                                <span class="text-[10px] font-mono bg-rose-50 text-rose-700 px-1.5 py-0.5 rounded font-bold">2 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週五 06-07 (E512 工學大樓)</div>
+                        </div>
+
+                        <div class="p-3 rounded-xl bg-gray-50 border border-gray-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="font-bold text-xs text-gray-900">男女體育-重量訓練 (3241)</span>
+                                <span class="text-[10px] font-mono bg-lime-50 text-lime-700 px-1.5 py-0.5 rounded font-bold">1 學分</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500">週二 09-10 (SG323 紹謨體育館重量訓練室)</div>
+                        </div>
+                    </div>
+
+                    <div class="p-3.5 rounded-xl bg-brand-50/60 border border-brand-100/70 text-xs">
+                        <div class="font-bold text-brand-900 mb-1.5 flex items-center gap-1.5">
+                            <i class="fa-solid fa-map-location-dot text-brand-600"></i> 淡江校園大樓代碼對照
+                        </div>
+                        <div class="grid grid-cols-2 gap-1 text-[11px] text-brand-700">
+                            <div><span class="font-mono font-bold">G</span> 驚聲紀念大樓</div>
+                            <div><span class="font-mono font-bold">E</span> 工學大樓</div>
+                            <div><span class="font-mono font-bold">B</span> 商管大樓</div>
+                            <div><span class="font-mono font-bold">SG</span> 紹謨紀念體育館</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 底部返回首頁卡片 (佔滿全寬) -->
+        <div class="bento-card p-6 group cursor-pointer relative overflow-hidden bg-gray-900 text-white flex items-center justify-center">
+            <a href="index.html" class="absolute inset-0 z-10"></a>
+            <div class="absolute inset-0 bg-gradient-to-r from-gray-800 to-gray-900 translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-out"></div>
+            
+            <div class="relative z-10 flex items-center gap-3">
+                <div class="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center group-hover:-translate-x-2 transition-transform duration-300">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </div>
+                <span class="font-bold text-lg tracking-wide">返回個人主頁</span>
+            </div>
+        </div>
+
+        <footer class="mt-12 mb-6 text-center text-sm text-gray-400">
+            <p>&copy; 2026 Ray. Academic Timetable & Course Analytics.</p>
+        </footer>
+
+    </main>
+
+    <!-- 自動高亮當日課表腳本 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const day = new Date().getDay(); // 0: Sun, 1: Mon, ..., 6: Sat
+            const dayNames = ['星期日', '星期一', '星期二', '星期三', '星期四', '星期五', '星期六'];
+            const badge = document.getElementById('today-full-text');
+            if (day >= 1 && day <= 5) {
+                if (badge) badge.textContent = `今天是 ${dayNames[day]} (上課日)`;
+                const cols = document.querySelectorAll(`.schedule-col-${day}`);
+                cols.forEach(el => {
+                    el.classList.add('bg-brand-50/20');
+                });
+                const th = document.querySelector(`th.schedule-col-${day}`);
+                if (th) {
+                    th.classList.add('text-brand-600', 'bg-brand-50/60');
+                    th.innerHTML += ' <span class="text-[10px] font-normal text-brand-500">(今天)</span>';
+                }
+            } else {
+                if (badge) badge.textContent = `${dayNames[day]} (週末非上課日)`;
+            }
+        });
+    </script>
+
+</body>
+</html>
