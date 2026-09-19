@@ -104,6 +104,21 @@
             inset: 0;
             z-index: 10;
         }
+
+        /* 課表格子高度規範：確保連兩節、連三節的 rowspan 單元格 100% 填滿整格高度 */
+        .schedule-table {
+            table-layout: fixed;
+        }
+        .schedule-table tbody tr.schedule-row {
+            height: 78px;
+        }
+        .schedule-table tbody tr.schedule-rest-row {
+            height: 42px;
+        }
+        .schedule-table td {
+            height: 1px; /* 關鍵：強制讓瀏覽器計算 td 延伸高度，使內層 height: 100% 真正滿版 */
+            vertical-align: top;
+        }
     </style>
 </head>
 <body class="min-h-screen py-10 px-4 sm:px-6 lg:px-8">
@@ -528,7 +543,7 @@
 
                 <!-- 課表格線容器 (支援橫向捲動) -->
                 <div class="overflow-x-auto rounded-2xl border border-gray-100 shadow-sm bg-gray-50/50">
-                    <table class="w-full text-center border-collapse min-w-[650px] sm:min-w-[720px] text-xs">
+                    <table class="schedule-table w-full text-center border-collapse min-w-[650px] sm:min-w-[720px] text-xs table-fixed">
                         <thead>
                             <tr class="bg-gray-100/80 text-gray-700 font-semibold border-b border-gray-200/70">
                                 <th class="py-3 px-2 w-20 text-center font-bold text-gray-500">節次 / 時間</th>
@@ -541,32 +556,32 @@
                         </thead>
                         <tbody class="divide-y divide-gray-100 bg-white">
                             <!-- 01 節 -->
-                            <tr class="hover:bg-gray-50/40 transition-colors">
+                            <tr class="schedule-row hover:bg-gray-50/40 transition-colors">
                                 <td class="py-3 px-1 font-bold text-gray-500 bg-gray-50/70 align-middle">
                                     <div class="text-xs font-mono font-bold">01</div>
                                     <div class="text-[10px] text-gray-400 font-normal">08:10-09:00</div>
                                 </td>
                                 <!-- 週一 01-02 (連2節) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-1 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-teal-950">資料結構</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-teal-100/70 text-teal-700 font-semibold">01-02節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-teal-100 text-teal-800 font-bold whitespace-nowrap">連2節 01-02</span>
                                             </div>
-                                            <div class="text-[11px] text-teal-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-teal-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 黃仁俊 教授
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-teal-600 mt-2 pt-1.5 border-t border-teal-100/60">
-                                            <span class="font-mono text-teal-700">0662</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>G315</span>
+                                        <div class="flex items-center justify-between text-[10px] text-teal-600 mt-2 pt-1.5 border-t border-teal-100/70">
+                                            <span class="font-mono text-teal-700 font-semibold">0662</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>G315</span>
                                         </div>
                                     </div>
                                 </td>
                                 <!-- 週二 01 (單節) -->
                                 <td class="p-1.5 schedule-col-2 align-top">
-                                    <div class="h-full p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[66px] p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="font-bold text-xs">資料結構</div>
                                             <div class="text-[10.5px] text-teal-700 flex items-center gap-1 font-medium mt-0.5">
@@ -581,7 +596,7 @@
                                 </td>
                                 <!-- 週三 01 (單節 助教) -->
                                 <td class="p-1.5 schedule-col-3 align-top">
-                                    <div class="h-full p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[66px] p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="font-bold text-xs"><span class="text-amber-500 font-bold">※</span> 開源軟體實務</div>
                                             <div class="text-[10.5px] text-teal-700 flex items-center gap-1 font-medium mt-0.5">
@@ -598,7 +613,7 @@
                                 <td class="p-1.5 text-gray-300 schedule-col-5 font-mono">-</td>
                             </tr>
                             <!-- 02 節 -->
-                            <tr class="hover:bg-gray-50/40 transition-colors">
+                            <tr class="schedule-row hover:bg-gray-50/40 transition-colors">
                                 <td class="py-3 px-1 font-bold text-gray-500 bg-gray-50/70 align-middle">
                                     <div class="text-xs font-mono font-bold">02</div>
                                     <div class="text-[10px] text-gray-400 font-normal">09:10-10:00</div>
@@ -607,19 +622,19 @@
                                 <td class="p-1.5 text-gray-300 schedule-col-2 font-mono">-</td>
                                 <!-- 週三 02-03 (連2節 汪柏) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-3 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-teal-950">開源軟體實務</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-teal-100/70 text-teal-700 font-semibold">02-03節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-teal-100 text-teal-800 font-bold whitespace-nowrap">連2節 02-03</span>
                                             </div>
-                                            <div class="text-[11px] text-teal-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-teal-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 汪柏 教授
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-teal-600 mt-2 pt-1.5 border-t border-teal-100/60">
-                                            <span class="font-mono text-teal-700">0665</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E201</span>
+                                        <div class="flex items-center justify-between text-[10px] text-teal-600 mt-2 pt-1.5 border-t border-teal-100/70">
+                                            <span class="font-mono text-teal-700 font-semibold">0665</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-teal-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E201</span>
                                         </div>
                                     </div>
                                 </td>
@@ -627,70 +642,70 @@
                                 <td class="p-1.5 text-gray-300 schedule-col-5 font-mono">-</td>
                             </tr>
                             <!-- 03 節 -->
-                            <tr class="hover:bg-gray-50/40 transition-colors">
+                            <tr class="schedule-row hover:bg-gray-50/40 transition-colors">
                                 <td class="py-3 px-1 font-bold text-gray-500 bg-gray-50/70 align-middle">
                                     <div class="text-xs font-mono font-bold">03</div>
                                     <div class="text-[10px] text-gray-400 font-normal">10:10-11:00</div>
                                 </td>
                                 <!-- 週一 03-04 (連2節 離散數學) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-1 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-blue-950">離散數學</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-blue-100/70 text-blue-700 font-semibold">03-04節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-blue-100 text-blue-800 font-bold whitespace-nowrap">連2節 03-04</span>
                                             </div>
-                                            <div class="text-[11px] text-blue-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-blue-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 顏淑惠 教授
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-blue-600 mt-2 pt-1.5 border-t border-blue-100/60">
-                                            <span class="font-mono text-blue-700">0674</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-blue-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E307</span>
+                                        <div class="flex items-center justify-between text-[10px] text-blue-600 mt-2 pt-1.5 border-t border-blue-100/70">
+                                            <span class="font-mono text-blue-700 font-semibold">0674</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-blue-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E307</span>
                                         </div>
                                     </div>
                                 </td>
                                 <!-- 週二 03-04 (連2節 統計學習) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-2 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-cyan-50/90 border border-cyan-100 text-cyan-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-cyan-50/90 border border-cyan-100 text-cyan-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-cyan-950">統計學習</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-cyan-100/70 text-cyan-700 font-semibold">03-04節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-cyan-100 text-cyan-800 font-bold whitespace-nowrap">連2節 03-04</span>
                                             </div>
-                                            <div class="text-[11px] text-cyan-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-cyan-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 馮若梅 教授
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-cyan-600 mt-2 pt-1.5 border-t border-cyan-100/60">
-                                            <span class="font-mono text-cyan-700">0677</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-cyan-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E307</span>
+                                        <div class="flex items-center justify-between text-[10px] text-cyan-600 mt-2 pt-1.5 border-t border-cyan-100/70">
+                                            <span class="font-mono text-cyan-700 font-semibold">0677</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-cyan-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E307</span>
                                         </div>
                                     </div>
                                 </td>
                                 <!-- 週三由 02 節 rowspan 覆蓋 -->
                                 <!-- 週四 03-04 (連2節 ESG+AI) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-4 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-amber-50/90 border border-amber-100 text-amber-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-amber-50/90 border border-amber-100 text-amber-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-amber-950 truncate" title="面對ESG+AI新時代：台灣中小企業商機與創業">面對ESG+AI...</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-amber-100/70 text-amber-700 font-semibold">03-04節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-amber-100 text-amber-800 font-bold whitespace-nowrap">連2節 03-04</span>
                                             </div>
-                                            <div class="text-[11px] text-amber-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-amber-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 楊少明 教授
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-amber-600 mt-2 pt-1.5 border-t border-amber-100/60">
-                                            <span class="font-mono text-amber-700">1524</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-amber-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E787</span>
+                                        <div class="flex items-center justify-between text-[10px] text-amber-600 mt-2 pt-1.5 border-t border-amber-100/70">
+                                            <span class="font-mono text-amber-700 font-semibold">1524</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-amber-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E787</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="p-1.5 text-gray-300 schedule-col-5 font-mono">-</td>
                             </tr>
                             <!-- 04 節 -->
-                            <tr class="hover:bg-gray-50/40 transition-colors">
+                            <tr class="schedule-row hover:bg-gray-50/40 transition-colors">
                                 <td class="py-3 px-1 font-bold text-gray-500 bg-gray-50/70 align-middle">
                                     <div class="text-xs font-mono font-bold">04</div>
                                     <div class="text-[10px] text-gray-400 font-normal">11:10-12:00</div>
@@ -702,7 +717,7 @@
                                 <td class="p-1.5 text-gray-300 schedule-col-5 font-mono">-</td>
                             </tr>
                             <!-- 05 節 (午休) -->
-                            <tr class="bg-gray-50/70">
+                            <tr class="schedule-rest-row bg-gray-50/70">
                                 <td class="py-2.5 px-1 font-bold text-gray-400 bg-gray-100/60 align-middle">
                                     <div class="text-xs font-mono">05</div>
                                     <div class="text-[10px] text-gray-400">午休</div>
@@ -710,33 +725,33 @@
                                 <td colspan="5" class="py-2.5 text-xs text-gray-400 tracking-wider">── 中午休息時段 (12:10 ~ 13:00) ──</td>
                             </tr>
                             <!-- 06 節 -->
-                            <tr class="hover:bg-gray-50/40 transition-colors">
+                            <tr class="schedule-row hover:bg-gray-50/40 transition-colors">
                                 <td class="py-3 px-1 font-bold text-gray-500 bg-gray-50/70 align-middle">
                                     <div class="text-xs font-mono font-bold">06</div>
                                     <div class="text-[10px] text-gray-400 font-normal">13:10-14:00</div>
                                 </td>
                                 <!-- 週一 06-08 (連3節 資訊系統實驗一) -->
                                 <td rowspan="3" class="p-1.5 schedule-col-1 align-top">
-                                    <div class="h-full p-3.5 rounded-2xl bg-indigo-50/90 border border-indigo-100 text-indigo-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[228px] p-3.5 rounded-2xl bg-indigo-50/90 border border-indigo-100 text-indigo-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1.5">
                                                 <span class="font-bold text-xs text-indigo-950">資訊系統實驗(一)</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-indigo-100/70 text-indigo-700 font-semibold">06-08節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-indigo-100 text-indigo-800 font-bold whitespace-nowrap">連3節 06-08</span>
                                             </div>
                                             <div class="text-[11px] text-indigo-700 flex items-center gap-1 font-medium mb-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 徐銘志 教授
                                             </div>
                                             <p class="text-[10px] text-indigo-600/80 leading-relaxed hidden sm:block">連續 3 節軟硬體整合上機實作課</p>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-indigo-600 mt-2 pt-2 border-t border-indigo-100/60">
+                                        <div class="flex items-center justify-between text-[10px] text-indigo-600 mt-2 pt-2 border-t border-indigo-100/70">
                                             <span class="font-mono text-indigo-700 font-semibold">0668</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-indigo-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E213</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-indigo-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E213</span>
                                         </div>
                                     </div>
                                 </td>
                                 <!-- 週二 06 (單節 助教) -->
                                 <td class="p-1.5 schedule-col-2 align-top">
-                                    <div class="h-full p-2.5 rounded-xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[66px] p-2.5 rounded-xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="font-bold text-xs"><span class="text-amber-500 font-bold">※</span> 離散數學</div>
                                             <div class="text-[10.5px] text-blue-700 flex items-center gap-1 font-medium mt-0.5">
@@ -751,44 +766,44 @@
                                 </td>
                                 <!-- 週三 06-07 (連2節 OFFICE) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-3 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-purple-50/90 border border-purple-100 text-purple-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-purple-50/90 border border-purple-100 text-purple-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-purple-950">OFFICE證照實務</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-purple-100/70 text-purple-700 font-semibold">06-07節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-purple-100 text-purple-800 font-bold whitespace-nowrap">連2節 06-07</span>
                                             </div>
-                                            <div class="text-[11px] text-purple-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-purple-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 陳智揚 教授
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-purple-600 mt-2 pt-1.5 border-t border-purple-100/60">
-                                            <span class="font-mono text-purple-700">2525</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-purple-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>B113</span>
+                                        <div class="flex items-center justify-between text-[10px] text-purple-600 mt-2 pt-1.5 border-t border-purple-100/70">
+                                            <span class="font-mono text-purple-700 font-semibold">2525</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-purple-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>B113</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="p-1.5 text-gray-300 schedule-col-4 font-mono">-</td>
                                 <!-- 週五 06-07 (連2節 英文二) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-5 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-rose-50/90 border border-rose-100 text-rose-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-rose-50/90 border border-rose-100 text-rose-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-rose-950">英文（二）</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-rose-100/70 text-rose-700 font-semibold">06-07節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-rose-100 text-rose-800 font-bold whitespace-nowrap">連2節 06-07</span>
                                             </div>
-                                            <div class="text-[11px] text-rose-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-rose-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 高淑婷 老師
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-rose-600 mt-2 pt-1.5 border-t border-rose-100/60">
-                                            <span class="font-mono text-rose-700">1505</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-rose-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E512</span>
+                                        <div class="flex items-center justify-between text-[10px] text-rose-600 mt-2 pt-1.5 border-t border-rose-100/70">
+                                            <span class="font-mono text-rose-700 font-semibold">1505</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-rose-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E512</span>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
                             <!-- 07 節 -->
-                            <tr class="hover:bg-gray-50/40 transition-colors">
+                            <tr class="schedule-row hover:bg-gray-50/40 transition-colors">
                                 <td class="py-3 px-1 font-bold text-gray-500 bg-gray-50/70 align-middle">
                                     <div class="text-xs font-mono font-bold">07</div>
                                     <div class="text-[10px] text-gray-400 font-normal">14:10-15:00</div>
@@ -796,7 +811,7 @@
                                 <!-- 週一由 06 節 rowspan 覆蓋 -->
                                 <!-- 週二 07 (單節 顏淑惠) -->
                                 <td class="p-1.5 schedule-col-2 align-top">
-                                    <div class="h-full p-2.5 rounded-xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[66px] p-2.5 rounded-xl bg-blue-50/90 border border-blue-100 text-blue-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="font-bold text-xs">離散數學</div>
                                             <div class="text-[10.5px] text-blue-700 flex items-center gap-1 font-medium mt-0.5">
@@ -814,7 +829,7 @@
                                 <!-- 週五由 06 節 rowspan 覆蓋 -->
                             </tr>
                             <!-- 08 節 -->
-                            <tr class="hover:bg-gray-50/40 transition-colors">
+                            <tr class="schedule-row hover:bg-gray-50/40 transition-colors">
                                 <td class="py-3 px-1 font-bold text-gray-500 bg-gray-50/70 align-middle">
                                     <div class="text-xs font-mono font-bold">08</div>
                                     <div class="text-[10px] text-gray-400 font-normal">15:10-16:00</div>
@@ -826,50 +841,50 @@
                                 <td class="p-1.5 text-gray-300 schedule-col-5 font-mono">-</td>
                             </tr>
                             <!-- 09 節 -->
-                            <tr class="hover:bg-gray-50/40 transition-colors">
+                            <tr class="schedule-row hover:bg-gray-50/40 transition-colors">
                                 <td class="py-3 px-1 font-bold text-gray-500 bg-gray-50/70 align-middle">
                                     <div class="text-xs font-mono font-bold">09</div>
                                     <div class="text-[10px] text-gray-400 font-normal">16:10-17:00</div>
                                 </td>
                                 <!-- 週一 09-10 (連2節 正向心理學) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-1 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-purple-50/90 border border-purple-100 text-purple-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-purple-50/90 border border-purple-100 text-purple-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-purple-950">正向心理學</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-purple-100/70 text-purple-700 font-semibold">09-10節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-purple-100 text-purple-800 font-bold whitespace-nowrap">連2節 09-10</span>
                                             </div>
-                                            <div class="text-[11px] text-purple-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-purple-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 張菀珍 教授
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-purple-600 mt-2 pt-1.5 border-t border-purple-100/60">
-                                            <span class="font-mono text-purple-700">2721</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-purple-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>SG503</span>
+                                        <div class="flex items-center justify-between text-[10px] text-purple-600 mt-2 pt-1.5 border-t border-purple-100/70">
+                                            <span class="font-mono text-purple-700 font-semibold">2721</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-purple-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>SG503</span>
                                         </div>
                                     </div>
                                 </td>
                                 <!-- 週二 09-10 (連2節 體育-重量訓練) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-2 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-rose-50/90 border border-rose-100 text-rose-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-rose-50/90 border border-rose-100 text-rose-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-rose-950">體育-重量訓練</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-rose-100/70 text-rose-700 font-semibold">09-10節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-rose-100 text-rose-800 font-bold whitespace-nowrap">連2節 09-10</span>
                                             </div>
-                                            <div class="text-[11px] text-rose-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-rose-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-dumbbell text-[10px]"></i> 張弓弘 老師
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-rose-600 mt-2 pt-1.5 border-t border-rose-100/60">
-                                            <span class="font-mono text-rose-700">3241</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-rose-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>SG323</span>
+                                        <div class="flex items-center justify-between text-[10px] text-rose-600 mt-2 pt-1.5 border-t border-rose-100/70">
+                                            <span class="font-mono text-rose-700 font-semibold">3241</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-rose-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>SG323</span>
                                         </div>
                                     </div>
                                 </td>
                                 <!-- 週三 09 (單節 資料結構實習 助教) -->
                                 <td class="p-1.5 schedule-col-3 align-top">
-                                    <div class="h-full p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[66px] p-2.5 rounded-xl bg-teal-50/90 border border-teal-100 text-teal-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="font-bold text-xs"><span class="text-amber-500 font-bold">※</span> 資料結構</div>
                                             <div class="text-[10.5px] text-teal-700 flex items-center gap-1 font-medium mt-0.5">
@@ -884,26 +899,26 @@
                                 </td>
                                 <!-- 週四 09-10 (連2節 微機電系統概論) -->
                                 <td rowspan="2" class="p-1.5 schedule-col-4 align-top">
-                                    <div class="h-full p-3 rounded-2xl bg-orange-50/90 border border-orange-100 text-orange-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[148px] p-3 rounded-2xl bg-orange-50/90 border border-orange-100 text-orange-950 text-left hover:shadow-md transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="flex items-center justify-between gap-1 mb-1">
                                                 <span class="font-bold text-xs text-orange-950">微機電系統概論</span>
-                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-orange-100/70 text-orange-700 font-semibold">09-10節</span>
+                                                <span class="text-[9px] px-1.5 py-0.5 rounded font-mono bg-orange-100 text-orange-800 font-bold whitespace-nowrap">連2節 09-10</span>
                                             </div>
-                                            <div class="text-[11px] text-orange-700 flex items-center gap-1 font-medium">
+                                            <div class="text-[11px] text-orange-700 flex items-center gap-1 font-medium mt-1">
                                                 <i class="fa-solid fa-chalkboard-user text-[10px]"></i> 楊龍杰 教授
                                             </div>
                                         </div>
-                                        <div class="flex items-center justify-between text-[10px] text-orange-600 mt-2 pt-1.5 border-t border-orange-100/60">
-                                            <span class="font-mono text-orange-700">1511</span>
-                                            <span class="font-mono bg-white/80 px-1.5 py-0.5 rounded border border-orange-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E787</span>
+                                        <div class="flex items-center justify-between text-[10px] text-orange-600 mt-2 pt-1.5 border-t border-orange-100/70">
+                                            <span class="font-mono text-orange-700 font-semibold">1511</span>
+                                            <span class="font-mono bg-white/90 px-1.5 py-0.5 rounded border border-orange-100"><i class="fa-solid fa-location-dot text-[9px] mr-1"></i>E787</span>
                                         </div>
                                     </div>
                                 </td>
                                 <td class="p-1.5 text-gray-300 schedule-col-5 font-mono">-</td>
                             </tr>
                             <!-- 10 節 -->
-                            <tr class="hover:bg-gray-50/40 transition-colors">
+                            <tr class="schedule-row hover:bg-gray-50/40 transition-colors">
                                 <td class="py-3 px-1 font-bold text-gray-500 bg-gray-50/70 align-middle">
                                     <div class="text-xs font-mono font-bold">10</div>
                                     <div class="text-[10px] text-gray-400 font-normal">17:10-18:00</div>
@@ -912,7 +927,7 @@
                                 <!-- 週二由 09 節 rowspan 覆蓋 -->
                                 <!-- 週三 10 (單節 統計學習實習 助教) -->
                                 <td class="p-1.5 schedule-col-3 align-top">
-                                    <div class="h-full p-2.5 rounded-xl bg-cyan-50/90 border border-cyan-100 text-cyan-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
+                                    <div class="h-full min-h-[66px] p-2.5 rounded-xl bg-cyan-50/90 border border-cyan-100 text-cyan-950 text-left hover:shadow-sm transition-all flex flex-col justify-between">
                                         <div>
                                             <div class="font-bold text-xs"><span class="text-amber-500 font-bold">※</span> 統計學習</div>
                                             <div class="text-[10.5px] text-cyan-700 flex items-center gap-1 font-medium mt-0.5">
