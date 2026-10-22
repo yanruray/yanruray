@@ -8,7 +8,7 @@
 
 這是一個採用現代 **Bento Grid（便當盒網格）** 與 SaaS 極簡視覺風格設計的個人品牌與履歷網站。透過清爽的卡片式佈局與響應式設計（RWD），集中展示個人背景、學歷、競賽成果、社團經歷、MBTI 人格深度剖析、精選開發作品集以及學期互動課表。
 
-🔗 **線上預覽 (Live Demo)**：[https://yanruray.github.io/profile/](https://yanruray.github.io/profile/)
+🔗 **線上預覽 (Live Demo)**：[https://yanruray.github.io/yanruray/](https://yanruray.github.io/yanruray/)
 
 ---
 
